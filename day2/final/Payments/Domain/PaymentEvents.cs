@@ -1,6 +1,6 @@
 using Eventuous;
 
-namespace Bookings.Payments.Domain;
+namespace Payments.Domain;
 
 public static class PaymentEvents {
     [EventType("PaymentRecorded")]

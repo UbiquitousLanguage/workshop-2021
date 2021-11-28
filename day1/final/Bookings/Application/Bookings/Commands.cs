@@ -15,6 +15,7 @@ public static class BookingCommands {
 
     public record RecordPayment(
         string         BookingId,
+        string         PaymentId,
         float          Amount,
         string         Currency,
         string         PaidBy,

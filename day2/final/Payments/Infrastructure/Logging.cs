@@ -1,7 +1,7 @@
 using Serilog;
 using Serilog.Events;
 
-namespace Bookings.Payments.Infrastructure;
+namespace Payments.Infrastructure;
 
 public static class Logging {
     public static void ConfigureLog() {

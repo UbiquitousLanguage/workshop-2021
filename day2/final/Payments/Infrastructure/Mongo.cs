@@ -1,6 +1,6 @@
 using MongoDB.Driver;
 
-namespace Bookings.Payments.Infrastructure;
+namespace Payments.Infrastructure;
 
 public static class Mongo {
     public static IMongoDatabase ConfigureMongo() {

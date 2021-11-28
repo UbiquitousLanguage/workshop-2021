@@ -1,8 +1,7 @@
-using Bookings.Application.Bookings;
 using Microsoft.AspNetCore.Mvc;
 using static Bookings.Application.Bookings.BookingCommands;
 
-namespace Bookings.HttpApi.Bookings;
+namespace Bookings.Application.Bookings;
 
 [Route("/booking")]
 public class CommandApi : ControllerBase {

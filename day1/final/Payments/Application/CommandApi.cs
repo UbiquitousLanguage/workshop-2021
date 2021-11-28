@@ -4,7 +4,7 @@ using static Payments.Application.PaymentCommands;
 namespace Payments.Application; 
 
 [Route("payment")]
-public class CommandApi : ControllerBase {
+class CommandApi : ControllerBase {
     readonly CommandService _service;
         
     public CommandApi(CommandService service) => _service = service;

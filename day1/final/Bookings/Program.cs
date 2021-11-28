@@ -1,6 +1,7 @@
 using Bookings.Application.Bookings;
 using Bookings.Domain;
 using Bookings.Infrastructure;
+using Bookings.Integration;
 using CoreLib.Mongo;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,8 +12,10 @@ builder.Services.AddSingleton<IAggregateStore, MongoAggregateStore>();
 
 builder.Services
     .AddSingleton<BookingsCommandService>()
-    .AddSingleton<Services.IsRoomAvailable>((id,   period) => new ValueTask<bool>(true))
+    .AddSingleton<Services.IsRoomAvailable>((id, period, _) => new ValueTask<bool>(true))
     .AddSingleton<Services.ConvertCurrency>((from, currency) => new Money(from.Amount * 2, currency));
+
+builder.AddBroker(x => x.AddConsumer<IntegrationConsumer>());
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

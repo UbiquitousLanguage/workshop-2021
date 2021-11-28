@@ -1,8 +1,8 @@
-using Bookings.Payments.Domain;
 using Eventuous;
 using Eventuous.AspNetCore.Web;
+using Payments.Domain;
 
-namespace Bookings.Payments.Application;
+namespace Payments.Application;
 
 public class CommandService : ApplicationService<Payment, PaymentState, PaymentId> {
     public CommandService(IAggregateStore store) : base(store) {

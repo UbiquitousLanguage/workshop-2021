@@ -1,4 +1,3 @@
-using Bookings.Payments.Domain;
 using EventStore.Client;
 using Eventuous;
 using Eventuous.EventStore.Producers;
@@ -7,8 +6,9 @@ using Eventuous.Shovel;
 using Eventuous.Subscriptions.Checkpoints;
 using Eventuous.Subscriptions.Consumers;
 using Eventuous.Subscriptions.Context;
+using Payments.Domain;
 
-namespace Bookings.Payments.Integration;
+namespace Payments.Integration;
 
 public static class PaymentsShovel {
     static readonly StreamName Stream = new("PaymentsIntegration");

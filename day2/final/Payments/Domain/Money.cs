@@ -1,6 +1,6 @@
 using Eventuous;
 
-namespace Bookings.Payments.Domain;
+namespace Payments.Domain;
 
 public record Money {
     public float  Amount   { get; internal init; }

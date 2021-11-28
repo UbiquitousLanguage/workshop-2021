@@ -1,13 +1,13 @@
 using Eventuous;
-using static Bookings.Payments.Domain.PaymentEvents;
+using static Payments.Domain.PaymentEvents;
 
-namespace Bookings.Payments.Domain;
+namespace Payments.Domain;
 
 public class Payment : Aggregate<PaymentState, PaymentId> {
     public void ProcessPayment(
         PaymentId paymentId, string bookingId, Money amount, string method, string provider
     )
-        => Apply(new PaymentRecorded(paymentId, bookingId, amount.Amount, amount.Currency, method, provider));
+        => Apply(new PaymentEvents.PaymentRecorded(paymentId, bookingId, amount.Amount, amount.Currency, method, provider));
 }
 
 public record PaymentState : AggregateState<PaymentState, PaymentId> {
@@ -15,7 +15,7 @@ public record PaymentState : AggregateState<PaymentState, PaymentId> {
     public float  Amount    { get; init; }
 
     public PaymentState() {
-        On<PaymentRecorded>(
+        On<PaymentEvents.PaymentRecorded>(
             (state, recorded) => state with {
                 Id = new PaymentId(recorded.PaymentId),
                 BookingId = recorded.BookingId,
