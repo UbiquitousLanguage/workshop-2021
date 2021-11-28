@@ -1,4 +1,5 @@
 using Bookings.Application.Bookings;
+using Bookings.Domain;
 using CoreLib.Mongo;
 using MongoDb.Bson.NodaTime;
 using NodaTime;
@@ -11,7 +12,11 @@ var mongoOptions = builder.Configuration.GetSection("Mongo").Get<MongoConfig.Mon
 builder.Services.AddSingleton(MongoConfig.ConfigureMongo(mongoOptions));
 builder.Services.AddSingleton<IAggregateStore, MongoAggregateStore>();
 
-builder.Services.AddSingleton<BookingsCommandService>();
+builder.Services
+    .AddSingleton<BookingsQueryService>()
+    .AddSingleton<BookingsCommandService>()
+    .AddSingleton<Services.IsRoomAvailable>((id,   period, _) => new ValueTask<bool>(true))
+    .AddSingleton<Services.ConvertCurrency>((from, currency) => new Money(from.Amount * 2, currency));
 
 builder.Services
     .AddControllers()
