@@ -3,6 +3,8 @@ using static Payments.Domain.PaymentEvents;
 namespace Payments.Domain;
 
 public class Payment : Aggregate<PaymentId, PaymentState> {
+    public Payment() => State = new PaymentState();
+    
     public void ProcessPayment(
         PaymentId      paymentId,
         string         bookingId,
@@ -17,10 +19,10 @@ public class Payment : Aggregate<PaymentId, PaymentState> {
 
     protected override PaymentState When(object evt)
         => evt switch {
-            PaymentRecorded recorded => State with {
-                Id = recorded.PaymentId,
+            PaymentRecorded recorded => new PaymentState {
+                Id        = recorded.PaymentId,
                 BookingId = recorded.BookingId,
-                Amount = recorded.Amount
+                Amount    = recorded.Amount
             },
             _ => State
         };

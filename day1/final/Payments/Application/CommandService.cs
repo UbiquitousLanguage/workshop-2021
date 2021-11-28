@@ -3,9 +3,9 @@ using static Payments.Application.PaymentCommands;
 
 namespace Payments.Application;
 
-delegate Task PublishEvent(object evt, CancellationToken cancellationToken);
+public delegate Task PublishEvent(object evt, CancellationToken cancellationToken);
 
-class CommandService : CommandService<Payment, PaymentId, PaymentState> {
+public class CommandService : CommandService<Payment, PaymentId, PaymentState> {
     public CommandService(IAggregateStore store, PublishEvent publish) : base(store) {
         OnNewAsync<RecordPayment>(
             async (payment, cmd, ct) => {

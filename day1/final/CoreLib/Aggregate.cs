@@ -15,7 +15,7 @@ public abstract class Aggregate<TId, TState> where TId : AggregateId where TStat
 
     protected abstract TState When(object evt);
 
-    protected void ChangeState(TState state)
+    void ChangeState(TState state)
         => State = state with {
             Version = State.Version + 1
         };

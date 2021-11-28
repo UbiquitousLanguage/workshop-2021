@@ -3,8 +3,8 @@ using static Payments.Application.PaymentCommands;
 
 namespace Payments.Application; 
 
-[Route("payment")]
-class CommandApi : ControllerBase {
+[Route("/payment")]
+public class CommandApi : ControllerBase {
     readonly CommandService _service;
         
     public CommandApi(CommandService service) => _service = service;

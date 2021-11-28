@@ -7,14 +7,14 @@ public class Booking : Aggregate<BookingId, BookingState> {
     public Booking() => State = new BookingState();
 
     public async Task BookRoom(
-        BookingId       bookingId,
-        string          guestId,
-        RoomId          roomId,
-        StayPeriod      period,
-        Money           price,
-        string          bookedBy,
-        DateTimeOffset  bookedAt,
-        IsRoomAvailable isRoomAvailable,
+        BookingId         bookingId,
+        string            guestId,
+        RoomId            roomId,
+        StayPeriod        period,
+        Money             price,
+        string            bookedBy,
+        DateTimeOffset    bookedAt,
+        IsRoomAvailable   isRoomAvailable,
         CancellationToken cancellationToken
     ) {
         EnsureDoesntExist();
@@ -76,7 +76,10 @@ public class Booking : Aggregate<BookingId, BookingState> {
     }
 
     static async Task EnsureRoomAvailable(
-        RoomId roomId, StayPeriod period, IsRoomAvailable isRoomAvailable, CancellationToken cancellationToken
+        RoomId            roomId,
+        StayPeriod        period,
+        IsRoomAvailable   isRoomAvailable,
+        CancellationToken cancellationToken
     ) {
         var roomAvailable = await isRoomAvailable(roomId, period, cancellationToken);
         if (!roomAvailable) throw new DomainException("Room not available");
