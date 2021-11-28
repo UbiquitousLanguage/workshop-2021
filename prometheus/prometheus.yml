@@ -9,3 +9,7 @@ scrape_configs:
     static_configs:
       - targets:
           - 'host.docker.internal:5000'
+  - job_name: 'payments'
+    static_configs:
+      - targets:
+          - 'host.docker.internal:5050'
