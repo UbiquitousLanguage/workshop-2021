@@ -1,4 +1,3 @@
-using static Bookings.Domain.Bookings.BookingEvents;
 using static Bookings.Domain.Services;
 
 namespace Bookings.Domain.Bookings;
@@ -20,19 +19,14 @@ public class Booking : Aggregate<BookingId, BookingState> {
         EnsureDoesntExist();
         await EnsureRoomAvailable(roomId, period, isRoomAvailable, cancellationToken);
 
-        Apply(
-            new RoomBooked(
-                bookingId.Value,
-                roomId.Value,
-                guestId,
-                period.CheckIn,
-                period.CheckOut,
-                price.Amount,
-                price.Currency,
-                bookedBy,
-                bookedAt
-            )
-        );
+        State = new BookingState {
+            Id      = bookingId.Value,
+            GuestId = guestId,
+            RoomId  = roomId,
+            Price   = price,
+            Period  = period,
+            Paid    = price.Amount == 0
+        };
     }
 
     public void RecordPayment(Money paid, ConvertCurrency convertCurrency, string paidBy, DateTimeOffset paidAt) {
@@ -43,17 +37,10 @@ public class Booking : Aggregate<BookingId, BookingState> {
             : convertCurrency(paid, State.Price.Currency);
         var outstanding = State.Outstanding - localPaid;
 
-        Apply(
-            new BookingPaid(
-                State.Id,
-                paid.Amount,
-                paid.Currency,
-                outstanding.Amount == 0,
-                outstanding.Amount,
-                paidBy,
-                paidAt
-            )
-        );
+        ChangeState(State with {
+            Outstanding = outstanding,
+            Paid = outstanding.Amount == 0
+        });
     }
 
     public void ApplyDiscount(Money discount, ConvertCurrency convertCurrency) {
@@ -64,15 +51,10 @@ public class Booking : Aggregate<BookingId, BookingState> {
             : convertCurrency(discount, State.Price.Currency);
         var outstanding = State.Outstanding - localDiscountAmount;
 
-        Apply(
-            new DiscountApplied(
-                State.Id,
-                discount.Amount,
-                discount.Currency,
-                outstanding.Amount,
-                outstanding.Amount == 0
-            )
-        );
+        ChangeState(State with {
+            Outstanding = outstanding,
+            Paid = outstanding.Amount == 0
+        });
     }
 
     static async Task EnsureRoomAvailable(
@@ -84,29 +66,4 @@ public class Booking : Aggregate<BookingId, BookingState> {
         var roomAvailable = await isRoomAvailable(roomId, period, cancellationToken);
         if (!roomAvailable) throw new DomainException("Room not available");
     }
-
-    protected override BookingState When(object evt)
-        => evt switch {
-            RoomBooked e =>
-                new BookingState {
-                    Id          = e.BookingId,
-                    RoomId      = new RoomId(e.RoomId),
-                    GuestId     = e.GuestId,
-                    Price       = new Money { Amount       = e.Price, Currency       = e.Currency },
-                    Outstanding = new Money { Amount       = e.Price, Currency       = e.Currency },
-                    Period      = new StayPeriod { CheckIn = e.CheckInDate, CheckOut = e.CheckOutDate },
-                    Paid        = false
-                },
-            BookingPaid e =>
-                State with {
-                    Outstanding = new Money { Amount = e.Outstanding, Currency = State.Price.Currency },
-                    Paid = e.IsFullyPaid
-                },
-            DiscountApplied e =>
-                State with {
-                    Outstanding = new Money { Amount = e.Outstanding, Currency = State.Price.Currency },
-                    Paid = e.IsFullyPaid
-                },
-            _ => State
-        };
 }
