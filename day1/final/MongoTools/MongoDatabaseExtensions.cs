@@ -13,7 +13,7 @@ public static class MongoDatabaseExtensions {
     ) where T : Document
         => database.GetDocumentCollection<T>().DocumentExists(id, cancellationToken);
 
-    public static Task<T> LoadDocument<T>(
+    public static Task<T?> LoadDocument<T>(
         this IMongoDatabase database,
         string              id,
         CancellationToken   cancellationToken = default

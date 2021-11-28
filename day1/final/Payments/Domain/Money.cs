@@ -1,5 +1,3 @@
-using CoreLib;
-
 namespace Payments.Domain;
 
 public record Money {

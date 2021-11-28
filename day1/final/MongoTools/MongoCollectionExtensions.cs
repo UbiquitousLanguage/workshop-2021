@@ -35,7 +35,7 @@ public static class MongoCollectionExtensions {
             .AnyAsync(cancellationToken);
     }
 
-    public static Task<T> LoadDocument<T>(
+    public static Task<T?> LoadDocument<T>(
         this IMongoCollection<T> collection,
         string                   id,
         CancellationToken        cancellationToken = default
@@ -45,7 +45,7 @@ public static class MongoCollectionExtensions {
         return collection
             .Find(x => x.Id == id)
             .Limit(1)
-            .SingleOrDefaultAsync(cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken)!;
     }
 
     public static Task<TResult> LoadDocumentAs<T, TResult>(

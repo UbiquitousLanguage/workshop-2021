@@ -1,5 +1,3 @@
-using CoreLib;
-
 namespace Bookings.Domain.Bookings;
 
 public record BookingState : AggregateState<BookingId> {

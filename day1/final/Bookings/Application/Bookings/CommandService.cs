@@ -1,8 +1,7 @@
 using Bookings.Domain;
 using Bookings.Domain.Bookings;
-using CoreLib;
 
-namespace Bookings.Application.Bookings; 
+namespace Bookings.Application.Bookings;
 
 public class BookingsCommandService : CommandService<Booking, BookingId, BookingState> {
     public BookingsCommandService(

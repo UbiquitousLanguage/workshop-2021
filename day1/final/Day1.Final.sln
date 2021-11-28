@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookings.Domain", "Bookings
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payments", "Payments\Payments.csproj", "{6CC01C47-751C-4B2B-A298-758F0252D110}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLib.Mongo", "CoreLib.Mongo\CoreLib.Mongo.csproj", "{61EF011B-6C63-4938-BBD9-39DD14B4CC13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{6CC01C47-751C-4B2B-A298-758F0252D110}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CC01C47-751C-4B2B-A298-758F0252D110}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CC01C47-751C-4B2B-A298-758F0252D110}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61EF011B-6C63-4938-BBD9-39DD14B4CC13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61EF011B-6C63-4938-BBD9-39DD14B4CC13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61EF011B-6C63-4938-BBD9-39DD14B4CC13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61EF011B-6C63-4938-BBD9-39DD14B4CC13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

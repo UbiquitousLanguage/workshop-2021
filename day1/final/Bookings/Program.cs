@@ -1,21 +1,17 @@
 using Bookings.Application.Bookings;
 using Bookings.Domain;
 using Bookings.Infrastructure;
-using CoreLib;
+using CoreLib.Mongo;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton(
-    MongoConfig.ConfigureMongo(
-        builder.Configuration["MongoDb:ConnectionString"],
-        builder.Configuration["MongoDb:Database"]
-    )
-);
+var mongoOptions = builder.Configuration.GetSection("Mongo").Get<MongoConfig.MongoOptions>();
+builder.Services.AddSingleton(MongoConfig.ConfigureMongo(mongoOptions));
 builder.Services.AddSingleton<IAggregateStore, MongoAggregateStore>();
 
 builder.Services
     .AddSingleton<BookingsCommandService>()
-    .AddSingleton<Services.IsRoomAvailable>((id, period) => new ValueTask<bool>(true))
+    .AddSingleton<Services.IsRoomAvailable>((id,   period) => new ValueTask<bool>(true))
     .AddSingleton<Services.ConvertCurrency>((from, currency) => new Money(from.Amount * 2, currency));
 
 builder.Services.AddControllers();
@@ -24,10 +20,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment()) {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapControllers();
 

@@ -1,4 +1,3 @@
-using CoreLib;
 using static Payments.Domain.PaymentEvents;
 
 namespace Payments.Domain;

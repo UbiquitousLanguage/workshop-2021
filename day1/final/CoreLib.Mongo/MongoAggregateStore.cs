@@ -1,8 +1,8 @@
-using CoreLib;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using MongoTools;
 
-namespace Bookings.Infrastructure; 
+namespace CoreLib.Mongo;
 
 public class MongoAggregateStore : IAggregateStore {
     readonly IMongoDatabase               _database;
@@ -20,7 +20,7 @@ public class MongoAggregateStore : IAggregateStore {
         foreach (var change in aggregate.Changes) {
             _logger.LogInformation("Change: @{Event}", change);
         }
-            
+
         var result = await _database.ReplaceDocument(
             aggregate.State,
             cfg => cfg.IsUpsert = expectNew,
@@ -33,8 +33,11 @@ public class MongoAggregateStore : IAggregateStore {
     public async Task<T> Load<T, TId, TState>(TId id, CancellationToken cancellationToken)
         where T : Aggregate<TId, TState>, new() where TId : AggregateId where TState : AggregateState<TId> {
         var state = await _database.LoadDocument<TState>(id.Value, cancellationToken);
+
+        if (state == null)
+            throw new Exceptions.AggregateNotFound<T>(id.Value);
         state.SetInitialVersion();
-        var aggregate = new T {State = state};
+        var aggregate = new T { State = state };
         return aggregate;
     }
 
