@@ -6,7 +6,9 @@ namespace Bookings.Application.Bookings;
 
 public class BookingsCommandService : CommandService<Booking, BookingId, BookingState> {
     public BookingsCommandService(
-        IAggregateStore store, Services.IsRoomAvailable isRoomAvailable, Services.ConvertCurrency convertCurrency
+        IAggregateStore          store,
+        Services.IsRoomAvailable isRoomAvailable,
+        Services.ConvertCurrency convertCurrency
     ) : base(store) {
         OnNewAsync<Book>(
             async (booking, cmd, ct) =>
@@ -14,7 +16,7 @@ public class BookingsCommandService : CommandService<Booking, BookingId, Booking
                     new BookingId(cmd.BookingId),
                     cmd.GuestId,
                     new RoomId(cmd.RoomId),
-                    new StayPeriod(cmd.From, cmd.To),
+                    StayPeriod.FromDateTime(cmd.From, cmd.To),
                     new Money(cmd.Price, cmd.Currency),
                     cmd.BookedBy,
                     cmd.BookedAt,

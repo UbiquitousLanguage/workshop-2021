@@ -1,14 +1,19 @@
+using NodaTime;
+
 namespace Bookings.Domain; 
 
 public record StayPeriod {
-    public DateTimeOffset CheckIn  { get; internal init; }
-    public DateTimeOffset CheckOut { get; internal init; }
+    public LocalDate CheckIn  { get; internal init; }
+    public LocalDate CheckOut { get; internal init; }
         
     internal StayPeriod() { }
 
-    public StayPeriod(DateTimeOffset checkIn, DateTimeOffset checkOut) {
+    public static StayPeriod FromDateTime(DateTime checkIn, DateTime checkOut) {
         if (checkIn > checkOut) throw new DomainException("Check in date must be before check out date");
 
-        (CheckIn, CheckOut) = (checkIn, checkOut);
+        return new StayPeriod {
+            CheckIn = LocalDate.FromDateTime(checkIn),
+            CheckOut =  LocalDate.FromDateTime(checkOut)
+        };
     }
 }

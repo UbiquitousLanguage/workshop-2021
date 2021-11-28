@@ -1,3 +1,5 @@
+using NodaTime;
+
 namespace Bookings.Domain.Bookings;
 
 public static class BookingEvents {
@@ -5,8 +7,8 @@ public static class BookingEvents {
         string         BookingId,
         string         RoomId,
         string         GuestId,
-        DateTimeOffset CheckInDate,
-        DateTimeOffset CheckOutDate,
+        LocalDate      CheckInDate,
+        LocalDate      CheckOutDate,
         float          Price,
         string         Currency,
         string         BookedBy,

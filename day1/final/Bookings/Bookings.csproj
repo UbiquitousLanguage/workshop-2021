@@ -5,6 +5,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="MongoDb.Bson.NodaTime" Version="3.0.0" />
+        <PackageReference Include="NodaTime" Version="3.0.9" />
+        <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
         <PackageReference Include="MassTransit.AspNetCore" Version="7.2.4" />
         <PackageReference Include="MassTransit.RabbitMQ" Version="7.2.4" />
@@ -17,8 +20,5 @@
     </ItemGroup>
     <ItemGroup>
         <Using Include="CoreLib" />
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="HttpApi\Bookings" />
     </ItemGroup>
 </Project>
