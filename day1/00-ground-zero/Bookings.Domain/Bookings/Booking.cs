@@ -4,7 +4,8 @@ public class Booking : Aggregate<BookingId, BookingState> {
     public void BookRoom(
         BookingId         bookingId,
         string            guestId,
-        RoomId            roomId
+        RoomId            roomId,
+        StayPeriod stayPeriod
     ) {
         EnsureDoesntExist();
 
@@ -15,4 +16,5 @@ public class Booking : Aggregate<BookingId, BookingState> {
             Paid        = false
         };
     }
+
 }
