@@ -1,30 +1,41 @@
 using Bookings.Domain;
 using Bookings.Domain.Bookings;
 using Eventuous;
-using NodaTime;
 using static Bookings.Application.BookingCommands;
 
 namespace Bookings.Application;
 
 public class BookingsCommandService : ApplicationService<Booking, BookingState, BookingId> {
-    public BookingsCommandService(IAggregateStore store, Services.IsRoomAvailable isRoomAvailable) : base(store) {
+    public BookingsCommandService(
+        IAggregateStore          store,
+        Services.IsRoomAvailable isRoomAvailable,
+        Services.ApplyDiscount   applyDiscount
+    ) : base(store) {
         OnNewAsync<BookRoom>(
             (booking, cmd, _) => booking.BookRoom(
                 new BookingId(cmd.BookingId),
                 cmd.GuestId,
                 new RoomId(cmd.RoomId),
-                new StayPeriod(LocalDate.FromDateTime(cmd.CheckInDate), LocalDate.FromDateTime(cmd.CheckOutDate)),
-                new Money(cmd.BookingPrice, cmd.Currency),
-                new Money(cmd.PrepaidAmount, cmd.Currency),
+                StayPeriod.FromDateTime(cmd.CheckInDate, cmd.CheckOutDate),
+                Money.FromCurrency(cmd.BookingPrice, cmd.Currency),
+                Money.FromCurrency(cmd.PrepaidAmount, cmd.Currency),
                 DateTimeOffset.Now,
                 isRoomAvailable
             )
         );
 
+        OnExistingAsync<ApplyDiscount>(
+            cmd => new BookingId(cmd.BookingId),
+            async (booking, cmd, _) => {
+                var discount = await applyDiscount(booking.State.Price, cmd.DiscountCode);
+                booking.ApplyDiscount(discount, cmd.DiscountCode, cmd.AppliedBy, DateTimeOffset.Now);
+            }
+        );
+
         OnExisting<RecordPayment>(
             cmd => new BookingId(cmd.BookingId),
             (booking, cmd) => booking.RecordPayment(
-                new Money(cmd.PaidAmount, cmd.Currency),
+                Money.FromCurrency(cmd.PaidAmount, cmd.Currency),
                 cmd.PaymentId,
                 cmd.PaidBy,
                 DateTimeOffset.Now

@@ -13,5 +13,7 @@ public static class BookingCommands {
         DateTimeOffset BookingDate
     );
 
+    public record ApplyDiscount(string BookingId, string DiscountCode, string AppliedBy);
+
     public record RecordPayment(string BookingId, float PaidAmount, string Currency, string PaymentId, string PaidBy);
 }

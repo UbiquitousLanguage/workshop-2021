@@ -29,6 +29,18 @@ public static class BookingEvents {
             string         PaidBy,
             DateTimeOffset PaidAt
         );
+        
+        [EventType("V1.DiscountApplied")]
+        public record DiscountApplied(
+            string         BookingId,
+            float          Discount,
+            float          Outstanding,
+            string         Currency,
+            string         DiscountCode,
+            string         AppliedBy,
+            DateTimeOffset AppliedAt
+        );
+        
 
         [EventType("V1.FullyPaid")]
         public record BookingFullyPaid(string BookingId, DateTimeOffset FullyPaidAt);

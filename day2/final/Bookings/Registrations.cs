@@ -32,8 +32,8 @@ public static class Registrations {
         services.AddApplicationService<BookingsCommandService, Booking>();
 
         services.AddSingleton<Services.IsRoomAvailable>((id, period) => new ValueTask<bool>(true));
-
-        services.AddSingleton<Services.ConvertCurrency>((from, currency) => new Money(from.Amount * 2, currency));
+        services.AddSingleton<Services.ApplyDiscount>(DiscountService.GetDiscount);
+        services.AddSingleton<Services.ConvertCurrency>((from, currency) => Money.FromCurrency(from.Amount * 2, currency));
 
         services.AddSingleton(Mongo.ConfigureMongo());
         services.AddCheckpointStore<MongoCheckpointStore>();

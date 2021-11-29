@@ -2,7 +2,10 @@ using System.Collections.Immutable;
 using Eventuous;
 using static Bookings.Domain.Bookings.BookingEvents;
 
-namespace Bookings.Domain.Bookings; 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+
+namespace Bookings.Domain.Bookings;
 
 public record BookingState : AggregateState<BookingState, BookingId> {
     public string     GuestId     { get; init; }
@@ -12,35 +15,48 @@ public record BookingState : AggregateState<BookingState, BookingId> {
     public Money      Outstanding { get; init; }
     public bool       Paid        { get; init; }
 
-    public ImmutableList<PaymentRecord> PaymentRecords { get; init; } = ImmutableList<PaymentRecord>.Empty;
+    public ImmutableList<PaymentRecord> Payments { get; init; } = ImmutableList<PaymentRecord>.Empty;
 
-    internal bool HasPaymentBeenRecorded(string paymentId) => PaymentRecords.Any(x => x.PaymentId == paymentId);
+    public ImmutableList<DiscountRecord> Discounts { get; init; } = ImmutableList<DiscountRecord>.Empty;
+
+    internal bool HasPaymentBeenRecorded(string paymentId)
+        => Payments.Any(x => x.PaymentId == paymentId);
+
+    internal bool HasUsedDiscountCode(string discountCode)
+        => Discounts.Any(x => x.Code == discountCode);
 
     public BookingState() {
-        On<V1.RoomBooked>(HandleBooked);
-        On<V1.PaymentRecorded>(HandlePayment);
+        On<V1.RoomBooked>(WhenBooked);
+        On<V1.PaymentRecorded>(WhenPaymentRecorded);
+        On<V1.DiscountApplied>(WhenDiscountApplied);
         On<V1.BookingFullyPaid>((state, paid) => state with { Paid = true });
     }
 
-    static BookingState HandlePayment(BookingState state, V1.PaymentRecorded e)
-        => state with {
-            Outstanding = new Money { Amount = e.Outstanding, Currency = e.Currency },
-            PaymentRecords = state.PaymentRecords.Add(
-                new PaymentRecord(e.PaymentId, new Money { Amount = e.PaidAmount, Currency = e.Currency })
-            )
-        };
-
-    static BookingState HandleBooked(BookingState state, V1.RoomBooked booked)
+    static BookingState WhenBooked(BookingState state, V1.RoomBooked booked)
         => state with {
             Id = new BookingId(booked.BookingId),
             RoomId = new RoomId(booked.RoomId),
             Period = new StayPeriod(booked.CheckInDate, booked.CheckOutDate),
             GuestId = booked.GuestId,
-            Price = new Money { Amount       = booked.BookingPrice, Currency      = booked.Currency },
-            Outstanding = new Money { Amount = booked.OutstandingAmount, Currency = booked.Currency }
+            Price = new Money(booked.BookingPrice, booked.Currency),
+            Outstanding = new Money(booked.BookingPrice, booked.Currency)
+        };
+
+    static BookingState WhenPaymentRecorded(BookingState state, V1.PaymentRecorded e)
+        => state with {
+            Outstanding = new Money(e.Outstanding, e.Currency),
+            Payments = state.Payments.Add(
+                new PaymentRecord(e.PaymentId, new Money(e.PaidAmount, e.Currency))
+            )
+        };
+
+    static BookingState WhenDiscountApplied(BookingState state, V1.DiscountApplied e)
+        => state with {
+            Outstanding = new Money(e.Outstanding, e.Currency),
+            Discounts = state.Discounts.Add(new DiscountRecord(e.DiscountCode))
         };
 }
 
 public record PaymentRecord(string PaymentId, Money PaidAmount);
 
-public record DiscountRecord(Money Discount, string Reason);
+public record DiscountRecord(string Code);

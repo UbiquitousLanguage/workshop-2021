@@ -18,7 +18,7 @@ public class Booking : Aggregate<BookingState, BookingId> {
         EnsureDoesntExist();
         await EnsureRoomAvailable(roomId, period, isRoomAvailable);
 
-        var outstanding = price - prepaid;
+        var (amount, currency) = price - prepaid;
 
         Apply(
             new V1.RoomBooked(
@@ -29,40 +29,55 @@ public class Booking : Aggregate<BookingState, BookingId> {
                 period.CheckOut,
                 price.Amount,
                 prepaid.Amount,
-                outstanding.Amount,
-                price.Currency,
+                amount,
+                currency,
                 bookedAt
             )
         );
-            
+
         MarkFullyPaidIfNecessary(bookedAt);
     }
 
-    public void RecordPayment(
-        Money          paid,
-        string         paymentId,
-        string         paidBy,
-        DateTimeOffset paidAt
-    ) {
+    public void RecordPayment(Money paid, string paymentId, string paidBy, DateTimeOffset paidAt) {
         EnsureExists();
 
         if (State.HasPaymentBeenRecorded(paymentId)) return;
-            
-        var outstanding = State.Outstanding - paid;
+
+        var (amount, currency) = State.Outstanding - paid;
 
         Apply(
             new V1.PaymentRecorded(
                 State.Id,
                 paid.Amount,
-                outstanding.Amount,
-                paid.Currency,
+                amount,
+                currency,
                 paymentId,
                 paidBy,
                 paidAt
             )
         );
-            
+
         MarkFullyPaidIfNecessary(paidAt);
+    }
+
+    public void ApplyDiscount(Money discount, string discountCode, string appliedBy, DateTimeOffset appliedAt) {
+        EnsureExists();
+        
+        if (State.HasUsedDiscountCode(discountCode)) return;
+        
+        var (amount, currency) = State.Outstanding - discount;
+
+        Apply(
+            new V1.DiscountApplied(
+                State.Id,
+                discount.Amount,
+                amount,
+                currency,
+                discountCode,
+                appliedBy,
+                appliedAt
+            )
+        );
     }
 
     void MarkFullyPaidIfNecessary(DateTimeOffset when) {

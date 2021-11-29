@@ -12,7 +12,12 @@ public class BookingStateProjection : MongoProjection<BookingDocument> {
 
         On<V1.PaymentRecorded>(
             evt => evt.BookingId,
-            (evt, update) => update.Set(x => x.Outstanding, evt.Outstanding)
+            (evt, update) => update
+                .Set(x => x.Outstanding, evt.Outstanding)
+                .AddToSet(
+                    x => x.Payments,
+                    new BookingDocument.BookingPayment(evt.PaymentId, evt.PaidAmount, evt.PaidAt)
+                )
         );
 
         On<V1.BookingFullyPaid>(
@@ -22,7 +27,8 @@ public class BookingStateProjection : MongoProjection<BookingDocument> {
     }
 
     static UpdateDefinition<BookingDocument> HandleRoomBooked(
-        V1.RoomBooked evt, UpdateDefinitionBuilder<BookingDocument> update
+        V1.RoomBooked                            evt,
+        UpdateDefinitionBuilder<BookingDocument> update
     )
         => update.SetOnInsert(x => x.Id, evt.BookingId)
             .Set(x => x.GuestId, evt.GuestId)

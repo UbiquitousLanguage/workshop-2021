@@ -17,6 +17,14 @@ public class CommandApi : CommandHttpApiBase<Booking> {
         => Handle(cmd, cancellationToken);
 
     [HttpPost]
+    [Route("discount")]
+    public Task<ActionResult<Result>> ApplyDiscount(
+        [FromBody] ApplyDiscount cmd,
+        CancellationToken        cancellationToken
+    )
+        => Handle(cmd, cancellationToken);
+
+    [HttpPost]
     [Route("recordPayment")]
     public Task<ActionResult<Result>> RecordPayment([FromBody] RecordPayment cmd, CancellationToken cancellationToken)
         => Handle(cmd, cancellationToken);

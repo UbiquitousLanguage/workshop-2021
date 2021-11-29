@@ -2,4 +2,6 @@ using Eventuous;
 
 namespace Bookings.Domain;
 
-public record RoomId(string Value) : AggregateId(Value);
+public record RoomId: AggregateId {
+    public RoomId(string value) : base(value) { }
+}
