@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookings", "Bookings\Bookin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookings.Domain", "Bookings.Domain\Bookings.Domain.csproj", "{280363FF-F078-44B7-9A32-20FA7D6046E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payments", "Payments\Payments.csproj", "{EBD8B561-B354-4FDB-BF88-0BF0681F5530}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,10 +18,6 @@ Global
 		{280363FF-F078-44B7-9A32-20FA7D6046E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{280363FF-F078-44B7-9A32-20FA7D6046E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{280363FF-F078-44B7-9A32-20FA7D6046E5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EBD8B561-B354-4FDB-BF88-0BF0681F5530}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EBD8B561-B354-4FDB-BF88-0BF0681F5530}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EBD8B561-B354-4FDB-BF88-0BF0681F5530}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EBD8B561-B354-4FDB-BF88-0BF0681F5530}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
