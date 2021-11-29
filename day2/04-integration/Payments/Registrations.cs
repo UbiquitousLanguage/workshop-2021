@@ -1,12 +1,8 @@
-using Eventuous.Diagnostics.OpenTelemetry;
 using Eventuous.EventStore;
 using Eventuous.EventStore.Producers;
 using Eventuous.EventStore.Subscriptions;
 using Eventuous.Producers;
 using Eventuous.Projections.MongoDB;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using Payments.Application;
 using Payments.Domain;
 using Payments.Infrastructure;
@@ -28,24 +24,5 @@ public static class Registrations {
                 "IntegrationSubscription",
                 PaymentsShovel.Transform
             );
-    }
-    
-    public static void AddOpenTelemetry(this IServiceCollection services) {
-        services.AddOpenTelemetryMetrics(
-            builder => builder
-                .AddAspNetCoreInstrumentation()
-                .AddEventuous()
-                .AddEventuousSubscriptions()
-                .AddPrometheusExporter()
-        );
-        services.AddOpenTelemetryTracing(
-            builder => builder
-                .AddAspNetCoreInstrumentation()
-                .AddGrpcClientInstrumentation()
-                .AddEventuousTracing()
-                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("payments"))
-                .SetSampler(new AlwaysOnSampler())
-                .AddZipkinExporter()
-        );
     }
 }

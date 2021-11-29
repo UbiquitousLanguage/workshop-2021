@@ -25,8 +25,6 @@ builder.Services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddOpenTelemetry();
-
 builder.Services.AddEventuous();
 
 var app = builder.Build();
@@ -37,7 +35,6 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.MapControllers();
-app.UseOpenTelemetryPrometheusScrapingEndpoint();
 
 try {
     app.Run();
