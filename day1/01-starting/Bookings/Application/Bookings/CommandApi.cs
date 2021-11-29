@@ -10,7 +10,12 @@ public class CommandApi : ControllerBase {
     public CommandApi(BookingsCommandService service) => _service = service;
 
     [HttpPost]
-    [Route("")]
-    public Task DoIt([FromBody] Book cmd, CancellationToken cancellationToken)
+    [Route("book")]
+    public Task BookRoom([FromBody] BookRoom cmd, CancellationToken cancellationToken)
         => _service.HandleNew(cmd, cancellationToken);
+
+    [HttpPost]
+    [Route("recordPayment")]
+    public Task RecordPayment([FromBody] RecordPayment cmd, CancellationToken cancellationToken)
+        => _service.HandleExisting(cmd, cancellationToken);
 }

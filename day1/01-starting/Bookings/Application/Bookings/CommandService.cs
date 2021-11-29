@@ -6,7 +6,7 @@ namespace Bookings.Application.Bookings;
 
 public class BookingsCommandService : CommandService<Booking, BookingId, BookingState> {
     public BookingsCommandService(IAggregateStore store) : base(store) {
-        OnNew<Book>(
+        OnNew<BookRoom>(
             (booking, cmd) =>
                 booking.BookRoom(
                     new BookingId(cmd.BookingId),
@@ -16,5 +16,10 @@ public class BookingsCommandService : CommandService<Booking, BookingId, Booking
                     new Money(cmd.Price, cmd.Currency)
                 )
         );
+        
+        OnExisting<RecordPayment>(
+            cmd => new BookingId(cmd.BookingId),
+            (booking, cmd) => booking.AddPayment(new Money(cmd.Amount, cmd.Currency))
+            );
     }
 }
