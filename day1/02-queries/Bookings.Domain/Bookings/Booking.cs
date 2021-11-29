@@ -3,7 +3,8 @@ using static Bookings.Domain.Services;
 namespace Bookings.Domain.Bookings;
 
 public class Booking : Aggregate<BookingId, BookingState> {
-    public Booking() => State = new BookingState();
+    public Booking()
+        => State = new BookingState();
 
     public async Task BookRoom(
         BookingId         bookingId,
@@ -19,17 +20,25 @@ public class Booking : Aggregate<BookingId, BookingState> {
         EnsureDoesntExist();
         await EnsureRoomAvailable(roomId, period, isRoomAvailable, cancellationToken);
 
-        State = new BookingState {
-            Id      = bookingId.Value,
-            GuestId = guestId,
-            RoomId  = roomId,
-            Price   = price,
-            Period  = period,
-            Paid    = price.Amount == 0
-        };
+        ChangeState(
+            new BookingState {
+                Id          = bookingId.Value,
+                GuestId     = guestId,
+                RoomId      = roomId,
+                Price       = price,
+                Period      = period,
+                Outstanding = price,
+                Paid        = price.Amount == 0
+            }
+        );
     }
 
-    public void RecordPayment(Money paid, ConvertCurrency convertCurrency, string paidBy, DateTimeOffset paidAt) {
+    public void RecordPayment(
+        Money           paid,
+        ConvertCurrency convertCurrency,
+        string          paidBy,
+        DateTimeOffset  paidAt
+    ) {
         EnsureExists();
 
         var localPaid = State.Price.IsSameCurrency(paid)
@@ -37,10 +46,12 @@ public class Booking : Aggregate<BookingId, BookingState> {
             : convertCurrency(paid, State.Price.Currency);
         var outstanding = State.Outstanding - localPaid;
 
-        ChangeState(State with {
-            Outstanding = outstanding,
-            Paid = outstanding.Amount == 0
-        });
+        ChangeState(
+            State with {
+                Outstanding = outstanding,
+                Paid = outstanding.Amount == 0
+            }
+        );
     }
 
     public void ApplyDiscount(Money discount, ConvertCurrency convertCurrency) {
@@ -51,10 +62,12 @@ public class Booking : Aggregate<BookingId, BookingState> {
             : convertCurrency(discount, State.Price.Currency);
         var outstanding = State.Outstanding - localDiscountAmount;
 
-        ChangeState(State with {
-            Outstanding = outstanding,
-            Paid = outstanding.Amount == 0
-        });
+        ChangeState(
+            State with {
+                Outstanding = outstanding,
+                Paid = outstanding.Amount == 0
+            }
+        );
     }
 
     static async Task EnsureRoomAvailable(
