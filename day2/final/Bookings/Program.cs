@@ -1,13 +1,9 @@
 using Bookings;
-using Bookings.Domain.Bookings;
-using Eventuous;
 using Eventuous.AspNetCore;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 using Serilog;
 using Serilog.Events;
-
-TypeMap.RegisterKnownEventTypes(typeof(BookingEvents.V1.RoomBooked).Assembly);
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()

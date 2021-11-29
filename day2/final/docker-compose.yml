@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   esdb:
-    container_name: esdemo-esdb
+    container_name: day2-esdb
     image: eventstore/eventstore:latest #20.10.2-buster-slim
     ports:
       - '2113:2113'
@@ -19,7 +19,7 @@ services:
       EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP: "true"
 
   mongo:
-    container_name: esdemo-mongo
+    container_name: day2-mongo
     image: mongo
     ports:
       - '27017:27017'
@@ -29,12 +29,12 @@ services:
 
   zipkin:
     image: openzipkin/zipkin
-    container_name: esdemo-zipkin
+    container_name: day2-zipkin
     ports:
       - "9411:9411"
 
   prometheus:
-    container_name: esdemo-prometheus
+    container_name: day2-prometheus
     image: prom/prometheus:v2.17.1
     ports:
       - "9090:9090"
@@ -42,7 +42,7 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
 #  grafana:
-#    container_name: infozone-grafana
+#    container_name: day2-grafana
 #    image: grafana/grafana:6.7.2
 #    ports:
 #      - "3000:3000"
@@ -51,6 +51,7 @@ services:
 #      - ./grafana/dashboards:/dashboards
 
   seq:
+    container_name: day2-seq
     image: datalust/seq:latest
     environment:
       - ACCEPT_EULA=Y
@@ -59,4 +60,4 @@ services:
 
 networks:
   default:
-    name: eventuous-demo
+    name: workshop-demo
