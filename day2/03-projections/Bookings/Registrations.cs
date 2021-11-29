@@ -42,8 +42,7 @@ public static class Registrations {
             "BookingsProjections",
             builder => builder
                 .AddEventHandler<BookingStateProjection>()
-                .AddEventHandler<MyBookingsProjection>()
-                .WithPartitioningByStream(2)
+                // .AddEventHandler<MyBookingsProjection>()
         );
 
         services.AddSubscription<StreamSubscription, StreamSubscriptionOptions>(
