@@ -4,18 +4,12 @@ using Bookings.Application.Queries;
 using Bookings.Domain;
 using Bookings.Domain.Bookings;
 using Bookings.Infrastructure;
-using Bookings.Integration;
 using Eventuous;
-using Eventuous.Diagnostics.OpenTelemetry;
 using Eventuous.EventStore;
 using Eventuous.EventStore.Subscriptions;
 using Eventuous.Projections.MongoDB;
-using Eventuous.Subscriptions.Registrations;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 
 namespace Bookings;
 
@@ -42,36 +36,7 @@ public static class Registrations {
             "BookingsProjections",
             builder => builder
                 .AddEventHandler<BookingStateProjection>()
-                .AddEventHandler<MyBookingsProjection>()
-                .WithPartitioningByStream(2)
-        );
-
-        services.AddSubscription<StreamSubscription, StreamSubscriptionOptions>(
-            "PaymentIntegration",
-            builder => builder
-                .Configure(x => x.StreamName = PaymentsIntegrationHandler.Stream)
-                .AddEventHandler<PaymentsIntegrationHandler>()
-        );
-    }
-
-    public static void AddOpenTelemetry(this IServiceCollection services) {
-        services.AddOpenTelemetryMetrics(
-            builder => builder
-                .AddAspNetCoreInstrumentation()
-                .AddEventuous()
-                .AddEventuousSubscriptions()
-                .AddPrometheusExporter()
-        );
-
-        services.AddOpenTelemetryTracing(
-            builder => builder
-                .AddAspNetCoreInstrumentation()
-                .AddGrpcClientInstrumentation()
-                .AddEventuousTracing()
-                .AddMongoDBInstrumentation()
-                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("bookings"))
-                .SetSampler(new AlwaysOnSampler())
-                .AddZipkinExporter()
+                // .AddEventHandler<MyBookingsProjection>()
         );
     }
 }

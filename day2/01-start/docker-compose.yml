@@ -26,30 +26,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongoadmin
       MONGO_INITDB_ROOT_PASSWORD: secret
-
-  zipkin:
-    image: openzipkin/zipkin
-    container_name: day2-zipkin
-    ports:
-      - "9411:9411"
-
-  prometheus:
-    container_name: day2-prometheus
-    image: prom/prometheus:v2.17.1
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-
-#  grafana:
-#    container_name: day2-grafana
-#    image: grafana/grafana:6.7.2
-#    ports:
-#      - "3000:3000"
-#    volumes:
-#      - ./grafana/datasources.yml:/etc/grafana/provisioning/datasources/prometheus.yaml
-#      - ./grafana/dashboards:/dashboards
-
+  
   seq:
     container_name: day2-seq
     image: datalust/seq:latest

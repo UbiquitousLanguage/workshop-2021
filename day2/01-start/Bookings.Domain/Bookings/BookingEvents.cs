@@ -32,13 +32,8 @@ public static class BookingEvents {
         
         [EventType("V1.DiscountApplied")]
         public record DiscountApplied(
-            string         BookingId,
-            float          Discount,
-            float          Outstanding,
-            string         Currency,
-            string         DiscountCode,
-            string         AppliedBy,
-            DateTimeOffset AppliedAt
+            string         BookingId
+            // more stuff?
         );
         
 

@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using Eventuous;
 using static Bookings.Domain.Bookings.BookingEvents;
 
@@ -15,20 +14,10 @@ public record BookingState : AggregateState<BookingState, BookingId> {
     public Money      Outstanding { get; init; }
     public bool       Paid        { get; init; }
 
-    public ImmutableList<PaymentRecord> Payments { get; init; } = ImmutableList<PaymentRecord>.Empty;
-
-    public ImmutableList<DiscountRecord> Discounts { get; init; } = ImmutableList<DiscountRecord>.Empty;
-
-    internal bool HasPaymentBeenRecorded(string paymentId)
-        => Payments.Any(x => x.PaymentId == paymentId);
-
-    internal bool HasUsedDiscountCode(string discountCode)
-        => Discounts.Any(x => x.Code == discountCode);
-
     public BookingState() {
         On<V1.RoomBooked>(WhenBooked);
         On<V1.PaymentRecorded>(WhenPaymentRecorded);
-        On<V1.DiscountApplied>(WhenDiscountApplied);
+        // On<V1.DiscountApplied>();
         On<V1.BookingFullyPaid>((state, paid) => state with { Paid = true });
     }
 
@@ -45,18 +34,5 @@ public record BookingState : AggregateState<BookingState, BookingId> {
     static BookingState WhenPaymentRecorded(BookingState state, V1.PaymentRecorded e)
         => state with {
             Outstanding = new Money(e.Outstanding, e.Currency),
-            Payments = state.Payments.Add(
-                new PaymentRecord(e.PaymentId, new Money(e.PaidAmount, e.Currency))
-            )
-        };
-
-    static BookingState WhenDiscountApplied(BookingState state, V1.DiscountApplied e)
-        => state with {
-            Outstanding = new Money(e.Outstanding, e.Currency),
-            Discounts = state.Discounts.Add(new DiscountRecord(e.DiscountCode))
         };
 }
-
-public record PaymentRecord(string PaymentId, Money PaidAmount);
-
-public record DiscountRecord(string Code);

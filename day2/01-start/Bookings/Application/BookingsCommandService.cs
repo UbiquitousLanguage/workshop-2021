@@ -28,7 +28,6 @@ public class BookingsCommandService : ApplicationService<Booking, BookingState, 
             cmd => new BookingId(cmd.BookingId),
             async (booking, cmd, _) => {
                 var discount = await applyDiscount(booking.State.Price, cmd.DiscountCode);
-                booking.ApplyDiscount(discount, cmd.DiscountCode, cmd.AppliedBy, DateTimeOffset.Now);
             }
         );
 

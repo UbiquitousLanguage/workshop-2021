@@ -16,6 +16,7 @@ public class Booking : Aggregate<BookingState, BookingId> {
         IsRoomAvailable isRoomAvailable
     ) {
         EnsureDoesntExist();
+        
         await EnsureRoomAvailable(roomId, period, isRoomAvailable);
 
         var (amount, currency) = price - prepaid;
@@ -41,8 +42,6 @@ public class Booking : Aggregate<BookingState, BookingId> {
     public void RecordPayment(Money paid, string paymentId, string paidBy, DateTimeOffset paidAt) {
         EnsureExists();
 
-        if (State.HasPaymentBeenRecorded(paymentId)) return;
-
         var (amount, currency) = State.Outstanding - paid;
 
         Apply(
@@ -63,21 +62,7 @@ public class Booking : Aggregate<BookingState, BookingId> {
     public void ApplyDiscount(Money discount, string discountCode, string appliedBy, DateTimeOffset appliedAt) {
         EnsureExists();
         
-        if (State.HasUsedDiscountCode(discountCode)) return;
-        
-        var (amount, currency) = State.Outstanding - discount;
-
-        Apply(
-            new V1.DiscountApplied(
-                State.Id,
-                discount.Amount,
-                amount,
-                currency,
-                discountCode,
-                appliedBy,
-                appliedAt
-            )
-        );
+        // Apply the event here
     }
 
     void MarkFullyPaidIfNecessary(DateTimeOffset when) {
