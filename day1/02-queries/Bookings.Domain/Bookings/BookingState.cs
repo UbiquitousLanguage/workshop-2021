@@ -7,4 +7,5 @@ public record BookingState : AggregateState<BookingId> {
     public Money      Price       { get; set; }
     public Money      Outstanding { get; set; }
     public bool       Paid        { get; set; }
+    public bool       Cancelled   { get; set; }
 }

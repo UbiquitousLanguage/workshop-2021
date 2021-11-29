@@ -6,9 +6,10 @@ namespace Bookings.Application.Bookings;
 
 public class BookingsCommandService : CommandService<Booking, BookingId, BookingState> {
     public BookingsCommandService(
-        IAggregateStore          store,
-        Services.IsRoomAvailable isRoomAvailable,
-        Services.ConvertCurrency convertCurrency
+        IAggregateStore             store,
+        Services.IsRoomAvailable    isRoomAvailable,
+        Services.ConvertCurrency    convertCurrency,
+        Services.CancellationPolicy cancellationPolicy
     ) : base(store) {
         OnNewAsync<Book>(
             async (booking, cmd, ct) =>
@@ -41,6 +42,11 @@ public class BookingsCommandService : CommandService<Booking, BookingId, Booking
                 new Money(cmd.Amount, cmd.Currency),
                 convertCurrency
             )
+        );
+
+        OnExisting<CancelBooking>(
+            cmd => new BookingId(cmd.BookingId),
+            (booking, _) => booking.CancelBooking(cancellationPolicy)
         );
     }
 }

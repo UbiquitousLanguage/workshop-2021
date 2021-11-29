@@ -27,4 +27,6 @@ public static class BookingCommands {
         float  Amount,
         string Currency
     );
+
+    public record CancelBooking(string BookingId);
 }

@@ -16,7 +16,10 @@ builder.Services
     .AddSingleton<BookingsQueryService>()
     .AddSingleton<BookingsCommandService>()
     .AddSingleton<Services.IsRoomAvailable>((id,   period, _) => new ValueTask<bool>(true))
-    .AddSingleton<Services.ConvertCurrency>((from, currency) => new Money(from.Amount * 2, currency));
+    .AddSingleton<Services.ConvertCurrency>((from, currency) => new Money(from.Amount * 2, currency))
+    .AddSingleton<Services.CancellationPolicy>(
+        state => state.Period.CheckIn < LocalDate.FromDateTime(DateTime.Today).Minus(Period.FromDays(3))
+    );
 
 builder.Services
     .AddControllers()

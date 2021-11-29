@@ -70,6 +70,14 @@ public class Booking : Aggregate<BookingId, BookingState> {
         );
     }
 
+    public void CancelBooking(CancellationPolicy cancellationPolicy) {
+        if (State.Cancelled) return;
+        
+        if (!cancellationPolicy(State)) throw new DomainException("Cannot cancel the booking");
+        
+        ChangeState(State with {Cancelled = true});
+    }
+
     static async Task EnsureRoomAvailable(
         RoomId            roomId,
         StayPeriod        period,

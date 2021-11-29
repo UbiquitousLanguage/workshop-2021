@@ -1,4 +1,5 @@
 using Payments.Domain;
+using Payments.Integration;
 using static Payments.Application.PaymentCommands;
 
 namespace Payments.Application;
@@ -18,7 +19,17 @@ public class CommandService : CommandService<Payment, PaymentId, PaymentState> {
                     DateTimeOffset.UtcNow
                 );
 
-                // await publish();
+                var evt = new PaymentEvents.PaymentRecorded(
+                    cmd.PaymentId,
+                    cmd.BookingId,
+                    cmd.Amount,
+                    cmd.Currency,
+                    cmd.Method,
+                    cmd.Provider,
+                    DateTimeOffset.Now
+                );
+
+                await publish(evt, ct);
             }
         );
     }

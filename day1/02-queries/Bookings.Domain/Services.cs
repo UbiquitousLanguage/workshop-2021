@@ -1,3 +1,5 @@
+using Bookings.Domain.Bookings;
+
 namespace Bookings.Domain;
 
 public static class Services {
@@ -6,4 +8,6 @@ public static class Services {
     );
 
     public delegate Money ConvertCurrency(Money from, string targetCurrency);
+
+    public delegate bool CancellationPolicy(BookingState bookingState);
 }

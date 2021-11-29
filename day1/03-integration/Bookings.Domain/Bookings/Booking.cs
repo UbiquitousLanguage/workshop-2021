@@ -19,7 +19,7 @@ public class Booking : Aggregate<BookingId, BookingState> {
         EnsureDoesntExist();
         await EnsureRoomAvailable(roomId, period, isRoomAvailable, cancellationToken);
 
-        State = new BookingState {
+        ChangeState(new BookingState {
             Id          = bookingId.Value,
             RoomId      = roomId,
             GuestId     = guestId,
@@ -27,7 +27,7 @@ public class Booking : Aggregate<BookingId, BookingState> {
             Outstanding = price,
             Period      = period,
             Paid        = false
-        };
+        });
     }
 
     public void RecordPayment(Money paid, ConvertCurrency convertCurrency, string paidBy, DateTimeOffset paidAt) {

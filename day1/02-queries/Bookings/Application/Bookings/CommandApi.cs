@@ -23,4 +23,9 @@ public class CommandApi : ControllerBase {
     [Route("discount")]
     public Task ApplyDiscount([FromBody] ApplyDiscount cmd, CancellationToken cancellationToken)
         => _service.HandleExisting(cmd, cancellationToken);
+
+    [HttpPost]
+    [Route("cancel")]
+    public Task Cancel([FromBody] CancelBooking cmd, CancellationToken cancellationToken)
+        => _service.HandleExisting(cmd, cancellationToken);
 }
