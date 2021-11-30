@@ -1,13 +1,9 @@
 using System.Text.Json;
 using Bookings.Application;
-using Bookings.Application.Queries;
 using Bookings.Domain;
 using Bookings.Domain.Bookings;
-using Bookings.Infrastructure;
 using Eventuous;
 using Eventuous.EventStore;
-using Eventuous.EventStore.Subscriptions;
-using Eventuous.Projections.MongoDB;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 
@@ -28,15 +24,5 @@ public static class Registrations {
         services.AddSingleton<Services.IsRoomAvailable>((id, period) => new ValueTask<bool>(true));
         services.AddSingleton<Services.ApplyDiscount>(DiscountService.GetDiscount);
         services.AddSingleton<Services.ConvertCurrency>((from, currency) => Money.FromCurrency(from.Amount * 2, currency));
-
-        services.AddSingleton(Mongo.ConfigureMongo());
-        services.AddCheckpointStore<MongoCheckpointStore>();
-
-        services.AddSubscription<AllStreamSubscription, AllStreamSubscriptionOptions>(
-            "BookingsProjections",
-            builder => builder
-                .AddEventHandler<BookingStateProjection>()
-                // .AddEventHandler<MyBookingsProjection>()
-        );
     }
 }
